@@ -493,9 +493,9 @@ python scripts/explore_db.py
 - **Configuration**: `dbt/dbt_project.yml`
 
 ### Contact Information
-- **Data Engineer**: [Your Name]
-- **Email**: [Your Email]
-- **LinkedIn**: [Your LinkedIn]
+- **Data Engineer**: Joaquin Cano
+- **Email**: canopolaniajoaquin@gmail.com
+- **LinkedIn**: https://www.linkedin.com/in/joaquin-cano-14a36b18b/
 
 ---
 
