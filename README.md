@@ -122,7 +122,7 @@ python scripts/quick_stats.py
 
 ### 📈 Data Statistics
 - **RAW**: 100,000 original records (`raw.raw_loans`)
-- **SILVER**: 81,999 records (18% duplicates removed) (`silver.silver_loans`)
+- **SILVER**: 81,999 records (18.0% duplicates removed) (`silver.silver_loans`)
 - **GOLD**: 
   - Fact Table: 81,999 records (`gold.fact_loan`)
   - Dim Customer: 81,999 unique customers (`gold.dim_customer`)
