@@ -139,11 +139,9 @@ python scripts/quick_stats.py
 
 ## 📚 Technical Documentation
 
-For detailed information about each component:
+For complete technical details and delivery information:
 
-- **[Complete Documentation](docs/COMPLETE_DOCUMENTATION.md)** - Full technical overview
-- **[NULL Analysis](docs/NULL_MEANING_ANALYSIS.md)** - Business meaning of NULL values
-- **[dbt Documentation](docs/dbt_documentation.md)** - Transformations and models
+- **[Complete Delivery Documentation](docs/DATA_ENGINEER_CHALLENGE_2025_DELIVERY.md)** - Comprehensive technical overview, data profiling, architecture, and implementation details
 
 ## 🔧 Useful Commands
 
