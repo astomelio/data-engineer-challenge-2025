@@ -1,0 +1,8 @@
+# dbt profile configuration for DuckDB
+data_challenge:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ./data_challenge.duckdb
+      threads: 4

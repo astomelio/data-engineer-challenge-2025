@@ -1,0 +1,21 @@
+name: "data_challenge"
+version: "1.0.0"
+config-version: 2
+
+profile: "data_challenge"
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+# Model configuration for data pipeline layers
+models:
+  data_challenge:
+    +materialized: view
+    # Silver layer: cleaned and standardized data
+    silver:
+      +materialized: table
+      +schema: silver
+    # Gold layer: dimensional model for analytics
+    gold:
+      +materialized: table
+      +schema: gold

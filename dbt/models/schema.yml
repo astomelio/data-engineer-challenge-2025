@@ -1,0 +1,52 @@
+version: 2
+models:
+  - name: silver_loans
+    description: "Cleaned and standardized loan data from raw layer"
+    columns:
+      - name: loan_id
+        description: "Unique loan identifier"
+        tests: [not_null]
+      - name: customer_id
+        description: "Unique customer identifier"
+        tests: [not_null]
+      - name: loan_status
+        description: "Current loan status"
+        tests:
+          - accepted_values:
+              values: ["Fully Paid", "Charged Off"]
+      - name: credit_score
+        description: "Customer credit score (300-850 range)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 300
+              max_value: 850
+
+  - name: fact_loan
+    description: "Fact table for loan analytics with dimensional relationships"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [loan_id]
+
+  - name: dim_customer
+    description: "Customer dimension table with demographic attributes"
+
+  - name: dim_purpose
+    description: "Loan purpose dimension table"
+
+# Custom tests for source data with column names containing spaces
+tests:
+  - name: raw_loan_id_not_null
+    description: "Loan ID should not be null in raw data"
+    test: |
+      select count(*) as failures
+      from {{ source('raw', 'raw_loans') }}
+      where "Loan ID" is null
+    expect: 0
+
+  - name: raw_customer_id_not_null
+    description: "Customer ID should not be null in raw data"
+    test: |
+      select count(*) as failures
+      from {{ source('raw', 'raw_loans') }}
+      where "Customer ID" is null
+    expect: 0
