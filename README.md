@@ -1,12 +1,12 @@
-# 🚀 Data Engineer Challenge - Pipeline de Préstamos
+# 🚀 Data Engineer Challenge - Loan Pipeline
 
-## 📋 Descripción General
+## 📋 Overview
 
-Este proyecto implementa un **pipeline de datos completo** para procesar información de préstamos desde un archivo Excel hasta un modelo dimensional optimizado para analytics. El pipeline sigue la arquitectura **RAW → SILVER → GOLD** y utiliza **Apache Airflow** para orquestación.
+This project implements a **complete data pipeline** to process loan information from an Excel file to an optimized dimensional model for analytics. The pipeline follows the **RAW → SILVER → GOLD** architecture and uses **Apache Airflow** for orchestration.
 
-## 🏗️ Arquitectura del Pipeline
+## 🏗️ Pipeline Architecture
 
-### 📊 Capas de Datos
+### 📊 Data Layers
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -14,67 +14,69 @@ Este proyecto implementa un **pipeline de datos completo** para procesar informa
 │   (RAW)         │───▶│   (Structured)  │───▶│   (Analytics)   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 │ • Excel Source  │    │ • Cleaned Data  │    │ • Fact Tables   │
-│ • Parquet Files │    │ • Deduplication │    │ • Dimension     │
+│ • Parquet Files │    │ • Deduplication │    │ • Dimensions    │
 │ • Raw Tables    │    │ • Validation    │    │ • Star Schema   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-### 🔄 Flujo de Datos
+### 🔄 Data Flow
 
-1. **LANDING (RAW)**: Datos originales del Excel → `raw.raw_loans` en DuckDB
-2. **SILVER**: Datos limpios y estructurados → `silver.silver_loans`
-3. **GOLD**: Modelo dimensional para analytics → `gold.fact_loan`, `gold.dim_*`
+1. **LANDING (RAW)**: Original Excel data → `raw.raw_loans` in DuckDB
+2. **SILVER**: Cleaned and structured data → `silver.silver_loans`
+3. **GOLD**: Dimensional model for analytics → `gold.fact_loan`, `gold.dim_*`
 
-### ⚠️ **Arquitectura Actual vs Producción**
-- **Desarrollo (Actual)**: RAW almacenado en DuckDB local
-- **Producción (AWS)**: RAW debería almacenarse en S3 buckets
-- **Migración**: Script incluye funcionalidad S3 para producción
+### ⚠️ **Current vs Production Architecture**
+- **Development (Current)**: RAW stored in local DuckDB
+- **Production (AWS)**: RAW should be stored in S3 buckets
+- **Migration**: Script includes S3 functionality for production
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 data_engineer_challenge_local_duckdb/
-├── 📊 data/                          # Datos fuente
-│   └── Data Engineer Challenge.xlsx  # Archivo Excel original
-├── 🔧 ingest/                        # Scripts de ingesta
-│   └── ingest_excel_to_duckdb.py    # Procesamiento inicial
-├── 🎯 dbt/                          # Transformaciones dbt
+├── 📊 data/                          # Source data
+│   └── Data Engineer Challenge.xlsx  # Original Excel file
+├── 🔧 ingest/                        # Ingestion scripts
+│   └── ingest_excel_to_duckdb.py    # Initial processing
+├── 🎯 dbt/                          # dbt transformations
 │   ├── models/
-│   │   ├── silver/                  # Capa SILVER
-│   │   │   └── silver_loans.sql     # Limpieza y deduplicación
-│   │   └── gold/                    # Capa GOLD
-│   │       ├── dim_customer.sql     # Dimensión clientes
-│   │       ├── dim_purpose.sql      # Dimensión propósitos
-│   │       └── fact_loan.sql        # Tabla de hechos
+│   │   ├── silver/                  # SILVER layer
+│   │   │   └── silver_loans.sql     # Cleaning and deduplication
+│   │   └── gold/                    # GOLD layer
+│   │       ├── dim_customer.sql     # Customer dimension
+│   │       ├── dim_purpose.sql      # Purpose dimension
+│   │       └── fact_loan.sql        # Fact table
 │   ├── dbt_project.yml
 │   └── packages.yml
-├── ☁️ airflow/                      # Orquestación Airflow
+├── ☁️ airflow/                      # Airflow orchestration
 │   ├── dags/
-│   │   └── loan_pipeline_dag.py
+│   │   ├── loan_pipeline_dag.py
+│   │   └── loan_pipeline_incremental_dag.py
 │   └── utils/
 │       ├── pipeline_functions.py
 │       └── config.py
-├── 📜 scripts/                      # Scripts de utilidad
+├── 📜 scripts/                      # Utility scripts
 │   ├── run_pipeline.py
-│   └── explore_db.py
-├── 📚 docs/                         # Documentación técnica
-│   ├── dbt_documentation.md
-│   ├── airflow_documentation.md
-│   └── pipeline_stages.md
-└── 📚 README.md                     # Esta documentación
+│   ├── explore_db.py
+│   └── quick_stats.py
+├── 📚 docs/                         # Technical documentation
+│   ├── COMPLETE_DOCUMENTATION.md
+│   ├── NULL_MEANING_ANALYSIS.md
+│   └── dbt_documentation.md
+└── 📚 README.md                     # This documentation
 ```
 
-## 🚀 Inicio Rápido
+## 🚀 Quick Start
 
-### 📋 Prerrequisitos
+### 📋 Prerequisites
 - Python 3.13+
 - Apache Airflow 3.0.4+
 - dbt-core 1.10.9+
 - DuckDB
 
-### 🔧 Instalación
+### 🔧 Installation
 
-1. **Clonar y configurar**
+1. **Clone and setup**
 ```bash
 git clone <repository-url>
 cd data_engineer_challenge_local_duckdb
@@ -82,98 +84,110 @@ python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 ```
 
-2. **Instalar dependencias**
+2. **Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Configurar Airflow**
+3. **Configure Airflow**
 ```bash
 export AIRFLOW_HOME=$(pwd)/airflow
 export PYTHONPATH=$PYTHONPATH:$(pwd)/airflow
 airflow standalone
 ```
 
-### 🎯 Ejecución
+### 🎯 Execution
 
-#### Opción 1: Pipeline Local
+#### Option 1: Local Pipeline
 ```bash
 python scripts/run_pipeline.py
 ```
 
-#### Opción 2: Pipeline con Airflow
-1. Acceder a http://localhost:8080 (admin/cvPPAEfuV7bSTP6s)
-2. Buscar DAG `loan_data_pipeline`
-3. Hacer clic en "Trigger DAG"
+#### Option 2: Pipeline with Airflow
+1. Access http://localhost:8080 (admin/cvPPAEfuV7bSTP6s)
+2. Find DAG `loan_data_pipeline`
+3. Click "Trigger DAG"
 
-#### Opción 3: Explorar Base de Datos
+#### Option 3: Explore Database
 ```bash
 python scripts/explore_db.py
 ```
 
-## 📊 Resultados del Pipeline
+#### Option 4: Quick Statistics
+```bash
+python scripts/quick_stats.py
+```
 
-### 📈 Estadísticas de Datos
-- **RAW**: 100,000 registros originales (`raw.raw_loans`)
-- **SILVER**: 81,999 registros (18% de duplicados removidos) (`silver.silver_loans`)
+## 📊 Pipeline Results
+
+### 📈 Data Statistics
+- **RAW**: 100,000 original records (`raw.raw_loans`)
+- **SILVER**: 81,999 records (18% duplicates removed) (`silver.silver_loans`)
 - **GOLD**: 
-  - Fact Table: 81,999 registros (`gold.fact_loan`)
-  - Dim Customer: 81,999 clientes únicos (`gold.dim_customer`)
-  - Dim Purpose: 16 propósitos únicos (`gold.dim_purpose`)
+  - Fact Table: 81,999 records (`gold.fact_loan`)
+  - Dim Customer: 81,999 unique customers (`gold.dim_customer`)
+  - Dim Purpose: 16 unique purposes (`gold.dim_purpose`)
 
-### 🎯 Distribución de Estados
+### 🎯 Status Distribution
 - **Fully Paid**: 59,360 (72.4%)
 - **Charged Off**: 22,639 (27.6%)
 
-### 📋 Propósitos Principales
+### 📋 Main Purposes
 - **Debt Consolidation**: 64,907 (79.2%)
 - **Home Improvements**: 4,795 (5.8%)
 - **Other**: 7,238 (8.8%)
 
-## 📚 Documentación Técnica
+## 📚 Technical Documentation
 
-Para información detallada sobre cada componente:
+For detailed information about each component:
 
-- **[Documentación dbt](docs/dbt_documentation.md)** - Transformaciones y modelos
-- **[Documentación Airflow](docs/airflow_documentation.md)** - Orquestación y configuración
-- **[Etapas del Pipeline](docs/pipeline_stages.md)** - Flujo completo y métricas
+- **[Complete Documentation](docs/COMPLETE_DOCUMENTATION.md)** - Full technical overview
+- **[NULL Analysis](docs/NULL_MEANING_ANALYSIS.md)** - Business meaning of NULL values
+- **[dbt Documentation](docs/dbt_documentation.md)** - Transformations and models
 
-## 🔧 Comandos Útiles
+## 🔧 Useful Commands
 
-### 📊 Monitoreo
+### 📊 Monitoring
 ```bash
-# Ver logs de Airflow
+# View Airflow logs
 tail -f airflow/logs/dag_id/task_id/run_id/task_id.log
 
-# Ejecutar dbt con debug
+# Run dbt with debug
 cd dbt && dbt run --log-level debug
+
+# List your project DAGs
+bash airflow/scripts/my_dags.sh
 ```
 
-### 🧹 Mantenimiento
+### 🧹 Maintenance
 ```bash
-# Limpiar dbt
+# Clean dbt
 cd dbt && dbt clean
 
-# Reprocesar desde cero
+# Reprocess from scratch
 python scripts/run_pipeline.py
+
+# Generate dbt docs
+cd dbt && dbt docs generate && dbt docs serve
 ```
 
-## 🎯 Características Principales
+## 🎯 Key Features
 
-- ✅ **Escalabilidad**: Preparado para S3 en producción (RAW layer)
-- ✅ **Calidad**: Tests automáticos y validación
-- ✅ **Documentación**: Generación automática de docs
-- ✅ **Monitoreo**: Airflow para orquestación
-- ✅ **Flexibilidad**: Múltiples opciones de ejecución
+- ✅ **Scalability**: Ready for S3 in production (RAW layer)
+- ✅ **Data Quality**: Automatic tests and validation
+- ✅ **Documentation**: Auto-generated documentation
+- ✅ **Monitoring**: Airflow for orchestration
+- ✅ **Flexibility**: Multiple execution options
+- ✅ **Incremental Processing**: Support for both full refresh and incremental modes
 
-## 🚀 Próximos Pasos
+## 🚀 Next Steps
 
-- Implementar alertas de calidad
-- Agregar más tests de negocio
-- Optimizar para volúmenes mayores
-- Implementar versionado de datos
+- Implement data quality alerts
+- Add more business tests
+- Optimize for larger volumes
+- Implement data versioning
+- Add data lineage visualization
 
 ---
 
-*Pipeline de Préstamos v1.0 - Documentación simplificada*
-
+*Loan Pipeline v1.0 - Professional documentation for enterprise presentation*
